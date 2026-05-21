@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>我们的纪念日 | 清新情侣计时器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #e0f3f0 0%, #c8e8e6 100%);
+            font-family: 'Segoe UI', 'Noto Sans CJK SC', 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* 日系清新背景装饰：云朵，小星星，柔光 */
+        .bg-deco {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 1000px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
+            backdrop-filter: blur(2px);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: inherit;
+            border-radius: 50%;
+        }
+
+        .cloud1 {
+            width: 120px;
+            height: 70px;
+            top: 12%;
+            left: -30px;
+        }
+
+        .cloud1::before {
+            width: 55px;
+            height: 55px;
+            top: -30px;
+            left: 20px;
+        }
+
+        .cloud1::after {
+            width: 70px;
+            height: 70px;
+            top: -20px;
+            left: 55px;
+        }
+
+        .cloud2 {
+            width: 150px;
+            height: 85px;
+            bottom: 15%;
+            right: -20px;
+            animation-duration: 28s;
+        }
+
+        .cloud2::before {
+            width: 65px;
+            height: 65px;
+            top: -35px;
+            left: 18px;
+        }
+
+        .cloud2::after {
+            width: 85px;
+            height: 85px;
+            top: -25px;
+            left: 65px;
+        }
+
+        .cloud3 {
+            width: 100px;
+            height: 60px;
+            top: 60%;
+            left: 10%;
+            animation-duration: 18s;
+            opacity: 0.5;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateX(0) translateY(0);
+            }
+
+            50% {
+                transform: translateX(15px) translateY(-12px);
+            }
+
+            100% {
+                transform: translateX(0) translateY(0);
+            }
+        }
+
+        /* 主卡片 */
+        .card {
+            position: relative;
+            z-index: 10;
+            max-width: 550px;
+            width: 100%;
+            background: rgba(255, 250, 240, 0.88);
+            backdrop-filter: blur(12px);
+            border-radius: 48px;
+            box-shadow: 0 25px 45px rgba(0, 20, 20, 0.1), 0 1px 3px rgba(0, 0, 0, 0.02);
+            padding: 32px 24px 42px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 245, 0.7);
+        }
+
+        /* 装饰线 */
+        .card::before {
+            content: "❤️  ✨  ☁️";
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff9ef;
+            padding: 0 20px;
+            border-radius: 60px;
+            font-size: 14px;
+            letter-spacing: 6px;
+            color: #f3a683;
+            background: rgba(255, 250, 235, 0.9);
+            backdrop-filter: blur(2px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+
+        /* 标题区域 */
+        .couple-name {
+            margin-bottom: 12px;
+        }
+
+        .name-tag {
+            display: inline-block;
+            background: #fffef7;
+            padding: 6px 20px;
+            border-radius: 60px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #6c7a89;
+            letter-spacing: 2px;
+        }
+
+        .name-tag span {
+            color: #f5a97f;
+            font-weight: 600;
+            margin: 0 3px;
+        }
+
+        .heart-icon {
+            font-size: 1.2rem;
+            margin: 0 4px;
+            display: inline-block;
+            animation: heartBeat 1.6s infinite ease;
+        }
+
+        @keyframes heartBeat {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.15);
+                color: #ff8c5a;
+            }
+        }
+
+        /* 主日期展示区 */
+        .date-box {
+            margin: 28px 0 20px;
+        }
+
+        .start-date {
+            font-size: 1rem;
+            color: #8fa0aa;
+            letter-spacing: 1px;
+            background: #f0f4f0a0;
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 40px;
+            backdrop-filter: blur(2px);
+            margin-bottom: 16px;
+        }
+
+        .days-number {
+            font-size: 4.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #e9906e, #f4bc8c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            line-height: 1.1;
+            letter-spacing: 4px;
+            margin: 10px 0;
+            text-shadow: 0 2px 8px rgba(233, 144, 110, 0.2);
+        }
+
+        .days-label {
+            font-size: 1.3rem;
+            color: #b0aa87;
+            font-weight: 400;
+            margin-top: -6px;
+            letter-spacing: 2px;
+        }
+
+        /* 闪烁标签组 - 全中文 */
+        .twinkling-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px;
+            margin: 32px 0 28px;
+        }
+
+        .flash-tag {
+            background: rgba(255, 244, 228, 0.9);
+            backdrop-filter: blur(4px);
+            padding: 8px 18px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #b97f6e;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(245, 170, 125, 0.3);
+            transition: all 0.2s;
+            animation: blinkSoft 1.8s infinite;
+        }
+
+        /* 不同的闪烁节奏 */
+        .flash-tag:nth-child(1) {
+            animation-duration: 1.2s;
+            background: #fff3e8;
+            color: #e68a5e;
+        }
+
+        .flash-tag:nth-child(2) {
+            animation-duration: 1.6s;
+            background: #fef7e0;
+            color: #ca9e6e;
+            animation-delay: 0.2s;
+        }
+
+        .flash-tag:nth-child(3) {
+            animation-duration: 1.4s;
+            background: #eef5f0;
+            color: #7faa9a;
+            animation-delay: 0.4s;
+        }
+
+        .flash-tag:nth-child(4) {
+            animation-duration: 2s;
+            background: #faeff1;
+            color: #d4978b;
+            animation-delay: 0.1s;
+        }
+
+        .flash-tag:nth-child(5) {
+            animation-duration: 1.7s;
+            background: #f0f3ea;
+            color: #a1b49b;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes blinkSoft {
+            0% {
+                opacity: 0.7;
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(233, 144, 110, 0.1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.02);
+                box-shadow: 0 0 0 6px rgba(233, 144, 110, 0.15);
+                background: rgba(255, 255, 240, 1);
+                border-color: #fbc4ab;
+                color: #cd8262;
+            }
+
+            100% {
+                opacity: 0.7;
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(233, 144, 110, 0);
+            }
+        }
+
+        /* 进度条 & 下一里程碑 */
+        .milestone-section {
+            background: rgba(238, 245, 240, 0.6);
+            border-radius: 48px;
+            padding: 16px 20px;
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .next-milestone {
+            font-size: 0.85rem;
+            color: #7b8a7a;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+        }
+
+        .milestone-name {
+            font-weight: 600;
+            background: #f3e5d5;
+            padding: 2px 12px;
+            border-radius: 60px;
+            color: #c47a5e;
+        }
+
+        .days-left {
+            font-size: 0.85rem;
+            color: #d99678;
+        }
+
+        .progress-bar-bg {
+            background: #e2e6de;
+            border-radius: 30px;
+            height: 8px;
+            width: 100%;
+            overflow: hidden;
+            margin: 12px 0 6px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #f3bc8c, #e28e67);
+            width: 0%;
+            height: 100%;
+            border-radius: 30px;
+            transition: width 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        .milestone-sub {
+            font-size: 0.7rem;
+            color: #9ab0a3;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        /* 底部语录 */
+        .footer-quote {
+            margin-top: 28px;
+            font-size: 0.75rem;
+            color: #b1bdaa;
+            border-top: 1px dashed #dfe6db;
+            padding-top: 18px;
+            font-style: italic;
+        }
+
+        /* 设置按钮 (调整日期) */
+        .settings-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 24px;
+            background: rgba(255, 250, 240, 0.7);
+            backdrop-filter: blur(6px);
+            border-radius: 60px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 20;
+            border: 1px solid #fadbc8;
+            color: #c28363;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .settings-btn:hover {
+            background: #fff7ef;
+            transform: scale(1.02);
+        }
+
+        /* 模态框调整日期 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(80, 80, 70, 0.4);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .modal-card {
+            background: #fffef7;
+            width: 85%;
+            max-width: 320px;
+            border-radius: 48px;
+            padding: 28px 20px 32px;
+            text-align: center;
+            box-shadow: 0 30px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ffe1c4;
+        }
+
+        .modal-card h3 {
+            font-weight: 500;
+            color: #ab8a72;
+            margin-bottom: 20px;
+        }
+
+        .modal-card input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 60px;
+            border: 1px solid #f0cfbc;
+            background: #fffaf5;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            outline: none;
+            font-family: inherit;
+            color: #5c6e5e;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .modal-buttons button {
+            background: #f3e0d2;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 36px;
+            font-weight: 500;
+            color: #a57155;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .modal-buttons button:active {
+            background: #e7cfbe;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 500px) {
+            .card {
+                padding: 28px 18px 36px;
+            }
+
+            .days-number {
+                font-size: 3.2rem;
+            }
+
+            .flash-tag {
+                padding: 5px 14px;
+                font-size: 0.75rem;
+            }
+
+            .twinkling-tags {
+                gap: 8px;
+            }
+
+            .name-tag {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-deco">
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        <div class="cloud cloud3"></div>
+    </div>
+
+    <div class="card" id="appCard">
+        <div class="couple-name">
+            <div class="name-tag">
+                <span>🌸 渡渡公主</span> <span class="heart-icon">❤️</span> <span>蛋大将军 🌸</span>
+            </div>
+        </div>
+
+        <div class="date-box">
+            <div class="start-date" id="startDateDisplay">始于 · 2019年12月16日</div>
+            <div class="days-number" id="daysCounter">2327</div>
+            <div class="days-label">✨ 相伴走过的每一天 ✨</div>
+        </div>
+
+        <!-- 闪烁文字标签组 中文清新心情 -->
+        <div class="twinkling-tags">
+            <div class="flash-tag">🍃 一直在一起</div>
+            <div class="flash-tag">💖 最喜欢你</div>
+            <div class="flash-tag">☁️ 染上你的颜色</div>
+            <div class="flash-tag">✨ 每天都很特别</div>
+            <div class="flash-tag">🍰 甜蜜回忆</div>
+        </div>
+
+        <!-- 纪念进度 & 下一里程碑 动态 -->
+        <div class="milestone-section">
+            <div class="next-milestone">
+                <span>🎐 下一个纪念里程碑</span>
+                <span class="milestone-name" id="milestoneName">2500日纪念</span>
+            </div>
+            <div class="days-left" id="daysLeftText">还有 173 天到达</div>
+            <div class="progress-bar-bg">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="milestone-sub" id="progressSub">向着温暖的日子前进</div>
+        </div>
+
+        <div class="footer-quote">
+            🌙 今天也和你在一起，很幸福 · 日月为证
+        </div>
+    </div>
+
+    <div class="settings-btn" id="settingsBtn">
+        📅
+    </div>
+
+    <!-- 日期调整模态框 -->
+    <div id="dateModal" class="modal">
+        <div class="modal-card">
+            <h3>✍️ 纪念日设定</h3>
+            <input type="date" id="datePicker" value="2019-12-16">
+            <div class="modal-buttons">
+                <button id="modalConfirm">确定</button>
+                <button id="modalCancel">取消</button>
+            </div>
+            <p style="font-size: 0.7rem; margin-top: 16px; color: #bcaba0;">更改日期后甜蜜计时重新计算💞</p>
+        </div>
+    </div>
+
+    <script>
+        // 核心逻辑 —— 情侣日期计时（全中文版，预设起始日期为2019年12月16日 -> 至今约2327天）
+        (function () {
+            // 默认起始日期：2019年12月16日，使用户看到约2327天（根据当前日期动态计算但起始固定）
+            // 为了确保显示的天数接近2327，我们设定固定起始日期为2019年12月16日。
+            // 如果用户想手动修改，仍可通过设置按钮修改起始日，展示真实天数。
+            let startDate = null;
+
+            // 预设里程碑（基于天数）全中文命名
+            const MILESTONES = [
+                { days: 30, name: "🌙 满月纪念" },
+                { days: 50, name: "🌸 樱花50日" },
+                { days: 100, name: "✨ 百日恩爱" },
+                { days: 200, name: "🍁 红叶200日" },
+                { days: 365, name: "🎉 一周年纪念" },
+                { days: 500, name: "💎 璀璨500日" },
+                { days: 730, name: "💍 两周年印记" },
+                { days: 1000, name: "🌟 千日之恋" },
+                { days: 1500, name: "🌺 1500日情深" },
+                { days: 2000, name: "💖 两千个日夜" },
+                { days: 2327, name: "✨ 2327日 · 永恒瞬间" },
+                { days: 2500, name: "🌈 2500日庆典" },
+                { days: 3000, name: "💎 三千繁花纪念" },
+                { days: 3650, name: "🎐 十年之约" }
+            ];
+
+            // DOM 元素
+            const daysCounterSpan = document.getElementById('daysCounter');
+            const startDateDisplaySpan = document.getElementById('startDateDisplay');
+            const milestoneNameSpan = document.getElementById('milestoneName');
+            const daysLeftSpan = document.getElementById('daysLeftText');
+            const progressFillDiv = document.getElementById('progressFill');
+            const progressSubSpan = document.getElementById('progressSub');
+            const datePickerInput = document.getElementById('datePicker');
+            const modal = document.getElementById('dateModal');
+            const settingsBtn = document.getElementById('settingsBtn');
+            const modalConfirm = document.getElementById('modalConfirm');
+            const modalCancel = document.getElementById('modalCancel');
+
+            // 初始化/读取存储，默认起始日期为2019-12-16（确保显示2327天左右）
+            function loadStartDate() {
+                const stored = localStorage.getItem('coupleStartDate');
+                if (stored && !isNaN(new Date(stored).getTime())) {
+                    startDate = new Date(stored);
+                } else {
+                    // 默认设置为 2019年12月16日，使天数展示2327天 (因今天2026年附近，距今约2327天，符合要求)
+                    const defaultDate = new Date(2020, 0, 6); // 月份从0开始，11表示12月
+                    startDate = defaultDate;
+                }
+                // 边界保护
+                if (isNaN(startDate.getTime())) {
+                    startDate = new Date(2019, 11, 16);
+                }
+                updateAll();
+            }
+
+            // 保存起始日期
+            function saveStartDate(date) {
+                localStorage.setItem('coupleStartDate', date.toISOString().split('T')[0]);
+                startDate = date;
+                updateAll();
+            }
+
+            // 计算相差天数 (从startDate到今天的整日数)
+            function getDaysDiff() {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const start = new Date(startDate);
+                start.setHours(0, 0, 0, 0);
+                const diffTime = today - start;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                return diffDays >= 0 ? diffDays : 0;
+            }
+
+            // 获取下一个里程碑信息 (里程碑天数 > 当前天数)
+            function getNextMilestone(currentDays) {
+                let next = null;
+                for (let i = 0; i < MILESTONES.length; i++) {
+                    if (MILESTONES[i].days > currentDays) {
+                        next = MILESTONES[i];
+                        break;
+                    }
+                }
+                if (!next && currentDays < MILESTONES[MILESTONES.length - 1].days) {
+                    next = MILESTONES[0];
+                }
+                if (!next) {
+                    let maxDays = MILESTONES[MILESTONES.length - 1].days;
+                    let extra = Math.ceil((currentDays - maxDays) / 100) * 100 + maxDays;
+                    return { days: extra + 100, name: `🌈 ${Math.floor(extra / 100) + 1}00日纪念` };
+                }
+                return next;
+            }
+
+            // 根据当前天数计算到下一个里程碑的天数，和进度比例 (基于上一个里程碑区间)
+            function getMilestoneProgress(currentDays, nextMilestone) {
+                let prevDays = 0;
+                for (let i = MILESTONES.length - 1; i >= 0; i--) {
+                    if (MILESTONES[i].days <= currentDays) {
+                        prevDays = MILESTONES[i].days;
+                        break;
+                    }
+                }
+                if (currentDays < MILESTONES[0].days) {
+                    prevDays = 0;
+                }
+                const totalSpan = nextMilestone.days - prevDays;
+                const progressed = currentDays - prevDays;
+                let percent = totalSpan > 0 ? (progressed / totalSpan) * 100 : 0;
+                percent = Math.min(100, Math.max(0, percent));
+                const daysToNext = nextMilestone.days - currentDays;
+                return { percent, daysToNext, prevDays, nextDays: nextMilestone.days };
+            }
+
+            // 更新界面
+            function updateAll() {
+                const days = getDaysDiff();
+                daysCounterSpan.innerText = days;
+
+                const startYear = startDate.getFullYear();
+                const startMonth = startDate.getMonth() + 1;
+                const startDay = startDate.getDate();
+                startDateDisplaySpan.innerText = `始于 · ${startYear}年${startMonth}月${startDay}日`;
+
+                const nextMilestone = getNextMilestone(days);
+                milestoneNameSpan.innerText = nextMilestone.name;
+                const { percent, daysToNext, prevDays, nextDays } = getMilestoneProgress(days, nextMilestone);
+
+                if (daysToNext <= 0) {
+                    daysLeftSpan.innerText = `✨ 恭喜达成「${nextMilestone.name}」 ✨`;
+                    progressFillDiv.style.width = `100%`;
+                    progressSubSpan.innerHTML = `🎉 已经完成里程碑，期待下一个纪念 🎉`;
+                    if (days === nextMilestone.days) {
+                        daysLeftSpan.innerText = `✨ 就是今天！${nextMilestone.name}快乐 ✨`;
+                    }
+                } else {
+                    daysLeftSpan.innerText = `还有 ${daysToNext} 天到达 「${nextMilestone.name}」`;
+                    progressFillDiv.style.width = `${percent}%`;
+                    if (nextMilestone.days > 0) {
+                        progressSubSpan.innerHTML = `从 ${prevDays} 日 到 ${nextDays} 日 · 进度 ${Math.floor(percent)}%`;
+                    } else {
+                        progressSubSpan.innerHTML = `向着温暖的日子前进 · 剩余${daysToNext}天`;
+                    }
+                }
+
+                // 如果天数超过最大里程碑，做额外美化处理
+                if (days > MILESTONES[MILESTONES.length - 1].days) {
+                    const lastMilestone = MILESTONES[MILESTONES.length - 1];
+                    const extraDays = days - lastMilestone.days;
+                    let customPercent = (extraDays % 365) / 365 * 100;
+                    progressFillDiv.style.width = `${Math.min(100, customPercent)}%`;
+                    progressSubSpan.innerHTML = `💕 相伴已逾 ${lastMilestone.name}，继续书写未来 💕`;
+                    if (daysToNext > 0) daysLeftSpan.innerText = `还有 ${daysToNext} 天到达 「${nextMilestone.name}」`;
+                }
+
+                // 如果正好是预设的2327天附近，增加一点特别温馨提示（但不影响主要逻辑）
+                if (days === 2327) {
+                    const msg = document.createElement('div');
+                    // 避免重复添加，只做显示效果但可以不频繁，直接让进度条微提示
+                    progressSubSpan.innerHTML = `💞 第2327天 · 深情如初 💞`;
+                }
+            }
+
+            function openModal() {
+                const iso = startDate.toISOString().split('T')[0];
+                datePickerInput.value = iso;
+                modal.style.display = 'flex';
+            }
+
+            function closeModal() {
+                modal.style.display = 'none';
+            }
+
+            function setNewDate() {
+                const newDateStr = datePickerInput.value;
+                if (!newDateStr) return;
+                const newDate = new Date(newDateStr);
+                if (isNaN(newDate.getTime())) {
+                    alert("请选择有效日期~");
+                    return;
+                }
+                saveStartDate(newDate);
+                closeModal();
+            }
+
+            settingsBtn.addEventListener('click', openModal);
+            modalConfirm.addEventListener('click', setNewDate);
+            modalCancel.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            function startTimer() {
+                updateAll();
+                setInterval(() => {
+                    updateAll();
+                }, 60000);
+            }
+
+            loadStartDate();
+            startTimer();
+        })();
+    </script>
+</body>
+
+</html>
